@@ -5,18 +5,21 @@
     "license": "Apache-2.0",
     "type": "module",
     "scripts": {
-        "integration-test": "vitest run **/*.integration.test.js --reporter=junit --outputFile=test_results/$npm_package_name.junit.xml"
+        "integration-test": "vitest run **/*.integration.test.js --reporter=junit --outputFile=test_results/$npm_package_name.junit.xml",
+        "dev": "nodemon server.js"
     },
     "devDependencies": {
+        "nodemon": "^3.1.4",
         "vitest": "^1.6.0"
     },
     "dependencies": {
         "@aws-sdk/client-bedrock-runtime": "^3.624.0",
+        "cors": "^2.8.5",
         "dotenv": "^16.4.5",
-        "express": "^4.19.2"
+        "express": "^4.19.2",
+        "gpt-tokenizer": "^2.2.1",
+        "mongodb": "^6.8.0",
+        "socket.io": "^4.7.5",
+        "socket.io-client": "^4.7.5"
     }
 }
-
-
-
-

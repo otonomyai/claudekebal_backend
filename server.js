@@ -1,64 +1,38 @@
 import express from 'express';
-import { streamResponse } from './functions/streamResponse.js';
-import aiLearningPrompt from './aiLearningPrompt.js';
+import cors from 'cors';
+import http from 'http'; // Import the HTTP module
+import connectDB from './config/db.js';
+import streamRoute, { setupSocketIO } from './routes/streamRoute.js';
+import tokenCountRoute from './routes/tokenCountRoute.js'; // Adjust the path as necessary
+import messageRoute from './routes/messageRoute.js'; // Adjust the path as necessary
 
 const app = express();
+const server = http.createServer(app); // Create an HTTP server
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-app.post('/stream', async (req, res) => {
-  const { conversation } = req.body;
-  console.log('Received conversation:', conversation);
+// Connect to MongoDB and log connection status
+let db;
+try {
+  db = await connectDB();
+  app.set('db', db);
+  console.log("Successfully connected to MongoDB.");
+} catch (err) {
+  console.error("Failed to connect to MongoDB:", err.message);
+  process.exit(1); // Exit the process if the connection fails
+}
 
-  let updatedConversation = [...conversation];
+// Routes
+app.use('/api', streamRoute);
+app.use('/api', tokenCountRoute);
+app.use('/api', messageRoute);
 
-  // Check if it's the first API call or the conversation has only one message
-  if (conversation.length === 1 && conversation[0].role === "user") {
-    // Update the first message with the AI Learning Companion Prompt and the user's first question
-    updatedConversation = [
-      {
-        role: "user",
-        content: [
-          {
-            text: `${aiLearningPrompt}\n\nThis is my first question:\n\n${conversation[0].content[0].text}`,
-          },
-        ],
-      },
-    ];
-  } else if (conversation.length > 1) {
-    // Check for consecutive user messages and remove the duplicate if found
-    if (
-      conversation[0].role === "user" &&
-      conversation[1].role === "user"
-    ) {
-      // Remove the original first user message as it is now part of the AI Learning Companion prompt
-      updatedConversation.shift();
-    }
-  }
-
-  res.setHeader('Content-Type', 'application/json');
-
-  try {
-    const responseStream = streamResponse(updatedConversation);
-
-    let responseText = '';
-    for await (const chunk of responseStream) {
-      responseText += chunk; // Collect the response chunks
-      console.log(responseText);
-    }
-
-    // Send the updated conversation back to the frontend along with the response text
-    res.status(200).json({
-      responseText,
-      updatedConversation,
-    });
-
-  } catch (err) {
-    console.error('Streaming error:', err);
-    res.status(500).json({ error: 'Failed to process the streaming request.' });
-  }
-});
+// Setup Socket.IO with the db instance
+setupSocketIO(server, db);
 
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
+server.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
