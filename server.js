@@ -1,17 +1,14 @@
 import express from 'express';
 import cors from 'cors';
-import http from 'http'; // Import the HTTP module
+import http from 'http';
 import connectDB from './config/db.js';
 import streamRoute, { setupSocketIO } from './routes/streamRoute.js';
-import tokenCountRoute from './routes/tokenCountRoute.js'; // Adjust the path as necessary
-import messageRoute from './routes/messageRoute.js'; // Adjust the path as necessary
+import tokenCountRoute from './routes/tokenCountRoute.js';
+import messageRoute from './routes/messageRoute.js';
 import threadRoutes from './routes/threadRoutes.js';
 
-
-// d6fffe6c-698f-4e1c-bb1b-c9290213a045
-
 const app = express();
-const server = http.createServer(app); // Create an HTTP server
+const server = http.createServer(app);
 
 // Middleware
 app.use(cors());
@@ -25,15 +22,22 @@ try {
   console.log("Successfully connected to MongoDB.");
 } catch (err) {
   console.error("Failed to connect to MongoDB:", err.message);
-  process.exit(1); // Exit the process if the connection fails
+  process.exit(1);
 }
 
-// Routes
+// Root route
+app.get('/', (req, res) => {
+  res.json({
+    message: "Welcome! I'm Kazuko, your friendly Koi fish AI assistant. How can I help you today?",
+    image: "https://pbs.twimg.com/media/GWCP0yNX0AEaJ8b?format=png&name=small"
+  });
+});
+
+// Other routes
 app.use('/api', streamRoute);
 app.use('/api', tokenCountRoute);
 app.use('/api', messageRoute);
 app.use('/api', threadRoutes);
-
 
 // Setup Socket.IO with the db instance
 setupSocketIO(server, db);
