@@ -7,6 +7,17 @@ import tokenCountRoute from './routes/tokenCountRoute.js';
 import messageRoute from './routes/messageRoute.js';
 import threadRoutes from './routes/threadRoutes.js';
 
+
+import { Langfuse } from "langfuse";
+
+const langfuse = new Langfuse({
+  secretKey: "sk-lf-707b89c6-7220-4c66-98f0-9eced8f81d72",
+  publicKey: "pk-lf-c369ef8b-ced6-4ebe-b2c9-c1fb778f2f10",
+  baseUrl: "https://cloud.langfuse.com"
+});
+
+
+
 const app = express();
 const server = http.createServer(app);
 

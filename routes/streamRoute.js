@@ -6,6 +6,15 @@ import { createChatThread, findChatThreadById, updateChatThread } from '../model
 import { streamResponse } from '../functions/streamResponse.js';
 import basePrompt from '../prompts/basePrompt.js'; // Ensure this import
 
+import { Langfuse } from "langfuse";
+
+const langfuse = new Langfuse();
+
+
+const trace = langfuse.trace({
+    name: "KAZUKO_CHAT",
+  });
+
 const router = Router();
 
 export function setupSocketIO(server, db) {
@@ -20,6 +29,10 @@ export function setupSocketIO(server, db) {
 
     socket.on('sendMessage', async (data) => {
       const { mac_id, ip, location, device_name, thread_id: providedThreadId, last_message } = data;
+
+     
+
+
 
       let user = await findUserByMac(db, mac_id);
       if (!user) {
@@ -70,7 +83,22 @@ export function setupSocketIO(server, db) {
       await updateChatThread(db, chatThread._id, chatThread.messages);
 
       try {
+
+        const generation = trace.generation({
+            name: "kazuko_chat",
+            model: "claude3.5_sonnet",
+            modelParameters: {
+              temperature: 0.9,
+              maxTokens: 2000,
+            },
+            input: last_message,
+          });
+
+         
+
         const responseStream = streamResponse(chatThread.messages);
+
+      
 
         let responseText = '';
         for await (const chunk of responseStream) {
@@ -87,6 +115,12 @@ export function setupSocketIO(server, db) {
         await updateChatThread(db, chatThread._id, chatThread.messages);
 
         socket.emit('done', { thread_id, updatedConversation: chatThread.messages });
+
+        generation.end({
+            output: responseText,
+          });
+
+
         console.log("done stream" , chatThread.messages);
         await updateChatThread(db, chatThread._id, chatThread.messages);
       } catch (err) {
