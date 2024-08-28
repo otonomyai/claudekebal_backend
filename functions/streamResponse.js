@@ -9,17 +9,22 @@ dotenv.config();
 const client = new BedrockRuntimeClient({ region: process.env.AWS_REGION });
 
 export async function* streamResponse(conversation) {
-  // Remove timestamp field from each message in the conversation
-  const cleanedConversation = conversation.map(({ timestamp, ...rest }) => rest);
+  // Remove timestamp field from each message in the conversation and ensure content is in the correct format
+  const cleanedConversation = conversation.map(({ timestamp, ...rest }) => {
+    // If content is a string, wrap it in an array of objects with a text property
+    if (typeof rest.content === 'string') {
+      rest.content = [{ text: rest.content }];
+    }
+    return rest;
+  });
 
   console.log(cleanedConversation, "Cleaned conversation");
-
 
   const modelId = "anthropic.claude-3-5-sonnet-20240620-v1:0";
 
   const command = new ConverseStreamCommand({
     modelId,
-    messages: cleanedConversation, // Spread the array directly in the API call
+    messages: cleanedConversation, // Use the modified array
     inferenceConfig: { maxTokens: 4090, temperature: 0.5, topP: 0.9 },
   });
 

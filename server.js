@@ -5,6 +5,10 @@ import connectDB from './config/db.js';
 import streamRoute, { setupSocketIO } from './routes/streamRoute.js';
 import tokenCountRoute from './routes/tokenCountRoute.js'; // Adjust the path as necessary
 import messageRoute from './routes/messageRoute.js'; // Adjust the path as necessary
+import threadRoutes from './routes/threadRoutes.js';
+
+
+// d6fffe6c-698f-4e1c-bb1b-c9290213a045
 
 const app = express();
 const server = http.createServer(app); // Create an HTTP server
@@ -28,6 +32,8 @@ try {
 app.use('/api', streamRoute);
 app.use('/api', tokenCountRoute);
 app.use('/api', messageRoute);
+app.use('/api', threadRoutes);
+
 
 // Setup Socket.IO with the db instance
 setupSocketIO(server, db);
