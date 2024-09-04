@@ -7,6 +7,10 @@ import tokenCountRoute from './routes/tokenCountRoute.js';
 import messageRoute from './routes/messageRoute.js';
 import threadRoutes from './routes/threadRoutes.js';
 
+import repoRoutes from './routes/repoRoutes.js'
+
+
+
 
 import { Langfuse } from "langfuse";
 
@@ -49,6 +53,11 @@ app.use('/api', streamRoute);
 app.use('/api', tokenCountRoute);
 app.use('/api', messageRoute);
 app.use('/api', threadRoutes);
+
+app.use('/api/repo', repoRoutes);
+
+
+
 
 // Setup Socket.IO with the db instance
 setupSocketIO(server, db);
