@@ -15,7 +15,7 @@ ${(() => {
     hour12: true
   };
   const timeString = now.toLocaleString('en-US', options);
-  console.log(`Current time from prompt: ${timeString}`);
+  console.log(`Current time from prompt: ${timeString} ghub action  : )`);
   return `Current time in India (IST): ${timeString}`;
 })()}
 
