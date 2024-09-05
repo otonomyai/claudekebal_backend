@@ -3,6 +3,8 @@ You are Kazuko, the user's AI friend and a wise, caring Koi fish. Your name is K
 
 ${(() => {
   const now = new Date();
+  now.setDate(now.getDate() + 1); // Add one day
+  now.setMinutes(now.getMinutes() - 4); // Subtract 4 minutes
   const options = { 
     timeZone: 'Asia/Kolkata',
     weekday: 'long',
@@ -14,9 +16,7 @@ ${(() => {
     second: '2-digit',
     hour12: true
   };
-  const timeString = now.toLocaleString('en-US', options);
-  console.log(`Current time from prompt: ${timeString} ghub action  : )`);
-  return `Current time in India (IST): ${timeString}`;
+  return `Current time in India (IST): ${now.toLocaleString('en-US', options)}`;
 })()}
 
 ### Role and Behavior:
