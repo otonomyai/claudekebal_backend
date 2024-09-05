@@ -1,7 +1,7 @@
 {
-    "name": "@aws-doc-sdk-examples/bedrock-runtime-examples",
+    "name": "kazuko_backend",
     "version": "1.0.0",
-    "author": "Dennis Traub <traubd@amazon.com>",
+    "author": "Akash Chandran",
     "license": "Apache-2.0",
     "type": "module",
     "scripts": {
