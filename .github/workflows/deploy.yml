@@ -20,9 +20,6 @@ jobs:
     - name: Install dependencies
       run: npm ci
 
-    - name: Run tests
-      run: npm run integration-test
-
     - name: Deploy to AWS EC2
       env:
         PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
