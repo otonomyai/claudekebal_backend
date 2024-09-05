@@ -15,12 +15,17 @@ jobs:
         PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
         HOST: ec2-13-212-150-226.ap-southeast-1.compute.amazonaws.com
         USER: ubuntu
+        PASSPHRASE: x
       run: |
         echo "$PRIVATE_KEY" > hi.pem
         chmod 400 hi.pem
-        ssh -o StrictHostKeyChecking=no -i hi.pem ${USER}@${HOST} '
+        eval $(ssh-agent -s)
+        echo "$PASSPHRASE" | ssh-add hi.pem
+        ssh -o StrictHostKeyChecking=no ${USER}@${HOST} '
           cd /home/ubuntu/claudekebal_backend &&
-          git pull origin main &&
+          eval $(ssh-agent -s) &&
+          echo "x" | ssh-add ~/.ssh/id_ed25519 &&
+          git pull git@github.com:otonomyai/claudekebal_backend.git main &&
           npm install &&
           pm2 restart kazuko_backend --update-env --force || pm2 start server.js --name kazuko_backend
         '
