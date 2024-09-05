@@ -3,23 +3,13 @@ name: Deploy to EC2
 on:
   push:
     branches:
-      - main  # or your default branch name
+      - main
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v3
-
-    - name: Use Node.js
-      uses: actions/setup-node@v3
-      with:
-        node-version: '16'
-
-    - name: Install dependencies
-      run: npm ci
-
     - name: Deploy to EC2
       env:
         PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
@@ -28,9 +18,9 @@ jobs:
       run: |
         echo "$PRIVATE_KEY" > kazuko_key.pem
         chmod 400 kazuko_key.pem
-        ssh -o StrictHostKeyChecking=no -i kazuko_key.pem ${USER}@${HOST} '
+        ssh -i kazuko_key.pem ${USER}@${HOST} '
           cd /home/ubuntu/claudekebal_backend &&
           git pull origin main &&
           npm install &&
-          pm2 restart kazuko_backend || pm2 start server.js --name kazuko_backend
+          pm2 restart kazuko_backend --update-env --force || pm2 start server.js --name kazuko_backend
         '
