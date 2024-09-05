@@ -10,18 +10,18 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+    - uses: actions/checkout@v3
 
     - name: Use Node.js
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
-        node-version: '14'  # or your preferred Node.js version
+        node-version: '16'  # or your preferred Node.js version
 
     - name: Install dependencies
       run: npm ci
 
     - name: Run tests
-      run: npm test
+      run: npm run integration-test
 
     - name: Deploy to AWS EC2
       env:
@@ -35,5 +35,5 @@ jobs:
           cd /home/ubuntu/kazuko &&
           git pull origin main &&
           npm install &&
-          pm2 restart kazuko
+          pm2 restart kazuko_backend
         '
