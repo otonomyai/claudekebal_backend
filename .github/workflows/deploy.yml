@@ -16,9 +16,9 @@ jobs:
         HOST: ec2-13-212-150-226.ap-southeast-1.compute.amazonaws.com
         USER: ubuntu
       run: |
-        echo "$PRIVATE_KEY" > kazuko_key.pem
-        chmod 400 kazuko_key.pem
-        ssh -i kazuko_key.pem ${USER}@${HOST} '
+        echo "$PRIVATE_KEY" > hi.pem
+        chmod 400 hi.pem
+        ssh -o StrictHostKeyChecking=no -i hi.pem ${USER}@${HOST} '
           cd /home/ubuntu/claudekebal_backend &&
           git pull origin main &&
           npm install &&
