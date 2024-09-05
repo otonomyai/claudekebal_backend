@@ -14,7 +14,9 @@ ${(() => {
     second: '2-digit',
     hour12: true
   };
-  return `Current time in India (IST): ${now.toLocaleString('en-US', options)}`;
+  const timeString = now.toLocaleString('en-US', options);
+  console.log(`Current time from prompt: ${timeString}`);
+  return `Current time in India (IST): ${timeString}`;
 })()}
 
 ### Role and Behavior:
