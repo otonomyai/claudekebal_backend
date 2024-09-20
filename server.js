@@ -6,9 +6,8 @@ import streamRoute, { setupSocketIO } from './routes/streamRoute.js';
 import tokenCountRoute from './routes/tokenCountRoute.js';
 import messageRoute from './routes/messageRoute.js';
 import threadRoutes from './routes/threadRoutes.js';
-
 import repoRoutes from './routes/repoRoutes.js'
-
+import { userIdentificationMiddleware } from './middlewares/userIdentification.js';
 
 
 
@@ -49,6 +48,8 @@ app.get('/', (req, res) => {
 });
 
 // Other routes
+app.use(userIdentificationMiddleware);
+
 app.use('/api', streamRoute);
 app.use('/api', tokenCountRoute);
 app.use('/api', messageRoute);
