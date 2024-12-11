@@ -22,7 +22,7 @@ export async function* streamResponse(conversation) {
 
   console.log(cleanedConversation, "Cleaned conversation");
 
-  const modelId = "anthropic.claude-3-5-sonnet-20240620-v1:0";
+  const modelId = "us.anthropic.claude-3-5-sonnet-20241022-v2:0";
 
   const command = new ConverseStreamCommand({
     modelId,
